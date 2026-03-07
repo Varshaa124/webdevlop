@@ -1,0 +1,64 @@
+Diary.jsx
+
+import { useState } from "react";
+
+function Diary({ entries, setEntries }) {
+  const [text, setText] = useState("");
+
+  const addEntry = () => {
+    setEntries([...entries, text]);
+    setText("");
+  };
+
+  const deleteEntry = (index) => {
+    setEntries(entries.filter((_, i) => i !== index));
+  };
+
+  return (
+    <div style={{width:"400px", margin:"auto", background:"white", padding:"20px"}}>
+      
+      <textarea
+        placeholder="Write your diary..."
+        value={text}
+        onChange={(e) => setText(e.target.value)}
+        style={{width:"100%", height:"60px"}}
+      />
+
+      <br /><br />
+
+      <button onClick={addEntry}style={{border: "2px solid black"}}>Add Entry</button>
+
+      <h3>Your Entries</h3>
+
+      {entries.map((entry, index) => (
+        <div key={index} style={{border:"1px solid gray", marginTop:"10px", padding:"10px"}}>
+          <p>{entry}</p>
+          <button onClick={() => deleteEntry(index)}style={{border: "2px solid black"}}>Delete</button>
+        </div>
+      ))}
+
+    </div>
+  );
+}
+
+export default Diary;
+
+
+App.jsx
+
+import { useState } from "react";
+import Diary from "./Diary";
+
+function App() {
+  const [entries, setEntries] = useState([]);
+
+  return (
+    <div style={{background:"#dff6ff", minHeight:"100vh", textAlign:"center", padding:"30px"}}>
+      <h1>My Diary</h1>
+
+      <Diary entries={entries} setEntries={setEntries} />
+    </div>
+  );
+}
+
+export default App;
