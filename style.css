@@ -1,0 +1,57 @@
+body{
+    font-family: Arial;
+    margin:0;
+    background:#f4f4f4;
+}
+
+header{
+    background:#004080;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+nav{
+    background:#333;
+    text-align:center;
+    padding:10px;
+}
+
+nav a{
+    color:white;
+    text-decoration:none;
+    margin:15px;
+    font-weight:bold;
+}
+
+nav a:hover{
+    color:yellow;
+}
+
+section{
+    padding:20px;
+}
+
+.courses ul{
+    list-style:square;
+}
+
+form input, form textarea{
+    width:250px;
+    padding:8px;
+    margin:5px;
+}
+
+button{
+    padding:10px 15px;
+    background:#004080;
+    color:white;
+    border:none;
+}
+
+footer{
+    text-align:center;
+    background:#333;
+    color:white;
+    padding:10px;
+}
