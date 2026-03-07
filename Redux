@@ -1,0 +1,143 @@
+actions.js
+export const addItem = (item) => {
+  return {
+    type: "ADD_ITEM",
+    payload: item
+  };
+};
+export const removeItem = (index) => {
+  return {
+    type: "REMOVE_ITEM",
+    payload: index
+  };
+};
+
+store.js
+import { createStore, applyMiddleware } from "redux";
+import reducer from "./reducer";
+import logger from "./middleware";
+const store = createStore(reducer, applyMiddleware(logger));
+export default store;
+
+reducer.js
+const initialState = [];
+const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case "ADD_ITEM":
+      return [...state, action.payload];
+    case "REMOVE_ITEM":
+      return state.filter((item, index) => index !== action.payload);
+    default:
+      return state;
+  }
+};
+export default reducer;
+
+middleware.js
+const logger = (store) => (next) => (action) => {
+  console.log("Action:", action);
+  return next(action);
+};
+export default logger;
+
+main.js
+import React from "react";
+import ReactDOM from "react-dom/client";
+import { Provider } from "react-redux";
+import store from "./store";
+import App from "./App";
+ReactDOM.createRoot(document.getElementById("root")).render(
+  <Provider store={store}>
+    <App />
+  </Provider>
+);
+
+App.jsx
+import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { addItem, removeItem } from "./actions";
+
+function App() {
+
+  const [item, setItem] = useState("");
+  const list = useSelector((state) => state);
+  const dispatch = useDispatch();
+
+  return (
+    <div
+      style={{
+        backgroundColor: "#dbeafe",
+        minHeight: "100vh",
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center"
+      }}
+    >
+      <div
+        style={{
+          backgroundColor: "white",
+          padding: "25px",
+          borderRadius: "8px",
+          width: "320px",
+          boxShadow: "0 0 10px gray",
+          textAlign: "center"
+        }}
+      >
+        <h2>Shopping List Manager</h2>
+
+        <input
+          type="text"
+          placeholder="Enter item"
+          value={item}
+          onChange={(e) => setItem(e.target.value)}
+          style={{
+            padding: "6px",
+            width: "65%",
+            marginRight: "8px"
+          }}
+        />
+
+        <button
+          onClick={() => {
+            dispatch(addItem(item));
+            setItem("");
+          }}
+          style={{
+            padding: "6px 10px",
+            backgroundColor: "green",
+            color: "white",
+            border: "none",
+            cursor: "pointer"
+          }}
+        >
+          Add
+        </button>
+
+        <ul style={{ marginTop: "15px", textAlign: "left" }}>
+          {list.map((i, index) => (
+            <li key={index} style={{ marginBottom: "8px" }}>
+              {i}
+
+              <button
+                onClick={() => dispatch(removeItem(index))}
+                style={{
+                  marginLeft: "10px",
+                  backgroundColor: "red",
+                  color: "white",
+                  border: "none",
+                  padding: "3px 8px",
+                  cursor: "pointer"
+                }}
+              >
+                Delete
+              </button>
+            </li>
+          ))}
+        </ul>
+
+      </div>
+    </div>
+  );
+}
+
+export default App;
