@@ -1,0 +1,158 @@
+Online.jsx
+
+import React, { useState } from "react";
+
+function Online() {
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    position: ""
+  });
+
+  const [errors, setErrors] = useState({});
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+
+    setFormData({
+      ...formData,
+      [name]: value
+    });
+  };
+
+  const validate = () => {
+
+    let newErrors = {};
+
+    const namePattern = /^[A-Za-z\s]+$/;
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const phonePattern = /^[0-9]{10}$/;
+
+    if (!formData.name) {
+      newErrors.name = "Name is required";
+    }
+    else if (!namePattern.test(formData.name)) {
+      newErrors.name = "Name should contain only letters and spaces";
+    }
+
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+    }
+    else if (!emailPattern.test(formData.email)) {
+      newErrors.email = "Invalid email format";
+    }
+
+    if (!formData.phone) {
+      newErrors.phone = "Phone number is required";
+    }
+    else if (!phonePattern.test(formData.phone)) {
+      newErrors.phone = "Phone must be 10 digits";
+    }
+
+    if (!formData.position) {
+      newErrors.position = "Please select a job position";
+    }
+
+    return newErrors;
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    const validationErrors = validate();
+
+    if (Object.keys(validationErrors).length === 0) {
+      alert("Application Submitted Successfully!");
+
+      setFormData({
+        name: "",
+        email: "",
+        phone: "",
+        position: ""
+      });
+
+      setErrors({});
+    } else {
+      setErrors(validationErrors);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+
+      <div>
+        <label>Name:</label><br/>
+        <input
+          type="text"
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+        />
+        <p style={{color:"red"}}>{errors.name}</p>
+      </div>
+
+      <div>
+        <label>Email:</label><br/>
+        <input
+          type="text"
+          name="email"
+          value={formData.email}
+          onChange={handleChange}
+        />
+        <p style={{color:"red"}}>{errors.email}</p>
+      </div>
+
+      <div>
+        <label>Phone:</label><br/>
+        <input
+          type="text"
+          name="phone"
+          value={formData.phone}
+          onChange={handleChange}
+        />
+        <p style={{color:"red"}}>{errors.phone}</p>
+      </div>
+
+      <div>
+        <label>Position Applying For:</label><br/>
+        <select
+          name="position"
+          value={formData.position}
+          onChange={handleChange}
+        >
+          <option value="">-- Select Position --</option>
+          <option value="Frontend Developer">Frontend Developer</option>
+          <option value="Backend Developer">Backend Developer</option>
+          <option value="Full Stack Developer">Full Stack Developer</option>
+          <option value="UI/UX Designer">UI/UX Designer</option>
+          <option value="Software Tester">Software Tester</option>
+        </select>
+
+        <p style={{color:"red"}}>{errors.position}</p>
+      </div>
+
+      <br/>
+      <button type="submit" style={{border: "2px solid black"}}>Apply</button>
+
+    </form>
+  );
+}
+
+export default Online;
+
+App.jsx
+import React from "react";
+import Online from "./Online";
+
+function App() {
+  return (
+    <div>
+      <h1>Online Job Application Form</h1>
+      <Online />
+    </div>
+  );
+}
+
+export default App;
