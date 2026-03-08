@@ -1,0 +1,218 @@
+server.js
+const express = require("express");
+const cors = require("cors");
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+let books = [];
+
+app.get("/books",(req,res)=>{
+res.json(books);
+});
+
+app.post("/books",(req,res)=>{
+books.push(req.body);
+res.json({message:"Book added"});
+});
+
+app.put("/books/:id",(req,res)=>{
+books[req.params.id] = req.body;
+res.json({message:"Book updated"});
+});
+
+app.delete("/books/:id",(req,res)=>{
+books.splice(req.params.id,1);
+res.json({message:"Book deleted"});
+});
+
+app.listen(5000,()=>{
+console.log("Server running on port 5000");
+});
+
+App.jsx
+import {useState,useEffect} from "react";
+
+function App(){
+
+const [books,setBooks] = useState([]);
+const [title,setTitle] = useState("");
+const [author,setAuthor] = useState("");
+const [price,setPrice] = useState("");
+const [editIndex,setEditIndex] = useState(null);
+
+useEffect(()=>{
+fetch("http://localhost:5000/books")
+.then(res=>res.json())
+.then(data=>setBooks(data));
+},[]);
+
+const addBook = ()=>{
+
+fetch("http://localhost:5000/books",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({title,author,price})
+})
+.then(()=>window.location.reload());
+
+};
+
+const deleteBook = (i)=>{
+
+fetch(`http://localhost:5000/books/${i}`,{
+method:"DELETE"
+})
+.then(()=>window.location.reload());
+
+};
+
+const editBook = (i)=>{
+setTitle(books[i].title);
+setAuthor(books[i].author);
+setPrice(books[i].price);
+setEditIndex(i);
+};
+
+const updateBook = ()=>{
+
+fetch(`http://localhost:5000/books/${editIndex}`,{
+method:"PUT",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({title,author,price})
+})
+.then(()=>window.location.reload());
+
+};
+
+return(
+
+<div>
+
+<style>
+{`
+body{
+background: linear-gradient(135deg,#cfd9ff,#e2ebff);
+font-family: Arial;
+}
+
+.container{
+width:650px;
+margin:auto;
+margin-top:50px;
+background:white;
+padding:25px;
+border-radius:10px;
+box-shadow:0px 4px 10px rgba(0,0,0,0.2);
+text-align:center;
+}
+
+h2{
+color:#333;
+margin-bottom:20px;
+}
+
+input{
+padding:8px;
+margin:6px;
+border-radius:5px;
+border:1px solid #ccc;
+}
+
+button{
+padding:7px 12px;
+margin:5px;
+border:none;
+border-radius:5px;
+cursor:pointer;
+}
+
+.add{
+background:#4CAF50;
+color:white;
+}
+
+.update{
+background:#2196F3;
+color:white;
+}
+
+.edit{
+background:#ff9800;
+color:white;
+}
+
+.delete{
+background:#f44336;
+color:white;
+}
+
+table{
+width:100%;
+margin-top:20px;
+border-collapse:collapse;
+}
+
+th{
+background:#4CAF50;
+color:white;
+padding:8px;
+}
+
+td{
+padding:8px;
+border:1px solid #ddd;
+}
+`}
+</style>
+
+<div className="container">
+
+<h2> Book Library Manager</h2>
+
+<input placeholder="Title" value={title} onChange={(e)=>setTitle(e.target.value)} />
+<input placeholder="Author" value={author} onChange={(e)=>setAuthor(e.target.value)} />
+<input placeholder="Price" value={price} onChange={(e)=>setPrice(e.target.value)} />
+
+<br/>
+
+<button className="add" onClick={addBook}>Add</button>
+<button className="update" onClick={updateBook}>Update</button>
+
+<table>
+
+<tr>
+<th>Title</th>
+<th>Author</th>
+<th>Price</th>
+<th>Action</th>
+</tr>
+
+{books.map((b,i)=>(
+
+<tr key={i}>
+<td>{b.title}</td>
+<td>{b.author}</td>
+<td>{b.price}</td>
+
+<td>
+<button className="edit" onClick={()=>editBook(i)}>Edit</button>
+<button className="delete" onClick={()=>deleteBook(i)}>Delete</button>
+</td>
+
+</tr>
+
+))}
+
+</table>
+
+</div>
+
+</div>
+
+)
+
+}
+
+export default App;
