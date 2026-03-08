@@ -1,0 +1,141 @@
+index.html
+<!DOCTYPE html>
+<html ng-app="studentApp">
+
+<head>
+<title>Student Manager</title>
+
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+<script src="app.js"></script>
+
+<style>
+body{
+    background:#f5f8c6;
+    font-family:Arial;
+}
+
+.container{
+    width:500px;
+    margin:auto;
+    margin-top:50px;
+    background:rgb(243, 241, 146);
+    padding:20px;
+    border-radius:8px;
+    text-align:center;
+}
+
+input{
+    padding:6px;
+    margin:5px;
+}
+
+button{
+    padding:5px 10px;
+    margin:3px;
+}
+
+table{
+    width:100%;
+    margin-top:15px;
+    border-collapse:collapse;
+}
+
+table, th, td{
+    border:1px solid black;
+    padding:8px;
+}
+</style>
+
+</head>
+
+<body ng-controller="StudentController">
+
+<div class="container">
+
+<h2>Student Manager</h2>
+
+<input type="text" placeholder="Name" ng-model="student.name">
+<input type="text" placeholder="Roll No" ng-model="student.roll">
+<input type="text" placeholder="Department" ng-model="student.dept">
+
+<br>
+
+<button ng-click="addStudent()">Add</button>
+<button ng-click="updateStudent()">Update</button>
+
+<table>
+
+<tr>
+<th>Name</th>
+<th>Roll No</th>
+<th>Department</th>
+<th>Action</th>
+</tr>
+<tr ng-repeat="s in students">
+<td>{{s.name}}</td>
+<td>{{s.roll}}</td>
+<td>{{s.dept}}</td>
+<td>
+<button ng-click="editStudent($index)">Edit</button>
+<button ng-click="deleteStudent($index)">Delete</button>
+</td>
+</tr>
+</table>
+
+</div>
+
+</body>
+</html>
+
+app.js
+var app = angular.module("studentApp", []);
+app.controller("StudentController", function($scope){
+
+// GET
+$scope.students = [];
+
+$scope.student = {};
+$scope.editIndex = -1;
+
+
+// POST
+$scope.addStudent = function(){
+
+$scope.students.push({
+name:$scope.student.name,
+roll:$scope.student.roll,
+dept:$scope.student.dept
+});
+
+$scope.student = {};
+
+};
+
+
+// EDIT
+$scope.editStudent = function(index){
+
+$scope.student = angular.copy($scope.students[index]);
+$scope.editIndex = index;
+
+};
+
+
+// PUT (Update)
+$scope.updateStudent = function(){
+
+$scope.students[$scope.editIndex] = angular.copy($scope.student);
+$scope.student = {};
+$scope.editIndex = -1;
+
+};
+
+
+// DELETE
+$scope.deleteStudent = function(index){
+
+$scope.students.splice(index,1);
+
+};
+
+});
