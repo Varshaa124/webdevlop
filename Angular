@@ -1,0 +1,63 @@
+app.html
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './app.html'
+})
+export class App {
+  m1:number = 0;
+  m2:number = 0;
+  m3:number = 0;
+  total:number = 0;
+  average:number = 0;
+  calculate(){
+    this.total = this.m1 + this.m2 + this.m3;
+    this.average = this.total / 3;
+  }
+
+}
+
+
+app.ts
+import { Component } from '@angular/core';
+import { FormsModule } from '@angular/forms';
+
+@Component({
+  selector: 'app-root',
+  standalone: true,
+  imports: [FormsModule],
+  templateUrl: './app.html'
+})
+export class App {
+
+  m1:number = 0;
+  m2:number = 0;
+  m3:number = 0;
+
+  total:number = 0;
+  average:number = 0;
+
+  calculate(){
+    this.total = this.m1 + this.m2 + this.m3;
+    this.average = this.total / 3;
+  }
+}
+
+
+app.congig.ts
+import { ApplicationConfig, provideBrowserGlobalErrorListeners, importProvidersFrom } from '@angular/core';
+import { provideRouter } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { routes } from './app.routes';
+import { provideClientHydration, withEventReplay } from '@angular/platform-browser';
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideBrowserGlobalErrorListeners(),
+    provideRouter(routes),
+    provideClientHydration(withEventReplay()),
+    importProvidersFrom(FormsModule)
+  ]
+};
