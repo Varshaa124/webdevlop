@@ -1,34 +1,105 @@
 server.js
 const express = require("express");
 const cors = require("cors");
+const sqlite3 = require("sqlite3").verbose();
 
 const app = express();
+
 app.use(cors());
 app.use(express.json());
 
-let books = [];
-
-app.get("/books",(req,res)=>{
-res.json(books);
+// create database
+const db = new sqlite3.Database("./books.db", (err) => {
+  if (err) {
+    console.log(err.message);
+  } else {
+    console.log("Connected to SQLite database");
+  }
 });
 
-app.post("/books",(req,res)=>{
-books.push(req.body);
-res.json({message:"Book added"});
+// create table if not exists
+db.run(`
+CREATE TABLE IF NOT EXISTS books(
+id INTEGER PRIMARY KEY AUTOINCREMENT,
+title TEXT,
+author TEXT,
+price TEXT
+)
+`);
+
+// GET books
+app.get("/books", (req, res) => {
+  db.all("SELECT * FROM books", (err, rows) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.json(rows);
+    }
+  });
 });
 
-app.put("/books/:id",(req,res)=>{
-books[req.params.id] = req.body;
-res.json({message:"Book updated"});
+// ADD book
+app.post("/books", (req, res) => {
+
+  const {title, author, price} = req.body;
+
+  db.run(
+    "INSERT INTO books (title, author, price) VALUES (?,?,?)",
+    [title, author, price],
+    function(err){
+      if(err){
+        res.send(err);
+      } else{
+        res.json({message:"Book added"});
+      }
+    }
+  );
+
 });
 
+// UPDATE book
+app.put("/books/:id", (req,res)=>{
+
+  const {title, author, price} = req.body;
+  const id = req.params.id;
+
+  db.run(
+    "UPDATE books SET title=?, author=?, price=? WHERE id=?",
+    [title, author, price, id],
+    function(err){
+      if(err){
+        res.send(err);
+      } else{
+        res.json({message:"Book updated"});
+      }
+    }
+  );
+
+});
+
+// DELETE book
 app.delete("/books/:id",(req,res)=>{
-books.splice(req.params.id,1);
-res.json({message:"Book deleted"});
+
+  const id = req.params.id;
+
+  db.run(
+    "DELETE FROM books WHERE id=?",
+    id,
+    function(err){
+      if(err){
+        res.send(err);
+      } else{
+        res.json({message:"Book deleted"});
+      }
+    }
+  );
+
 });
 
-app.listen(5000,()=>{
-console.log("Server running on port 5000");
+const PORT = process.env.PORT || 5000;
+
+app.listen(PORT,()=>{
+console.log(`Server running on port ${PORT}`);
 });
 
 App.jsx
@@ -216,3 +287,4 @@ border:1px solid #ddd;
 }
 
 export default App;
+
