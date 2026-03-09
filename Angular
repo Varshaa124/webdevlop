@@ -1,24 +1,51 @@
 app.html
-import { Component } from '@angular/core';
-import { FormsModule } from '@angular/forms';
-@Component({
-  selector: 'app-root',
-  standalone: true,
-  imports: [FormsModule],
-  templateUrl: './app.html'
-})
-export class App {
-  m1:number = 0;
-  m2:number = 0;
-  m3:number = 0;
-  total:number = 0;
-  average:number = 0;
-  calculate(){
-    this.total = this.m1 + this.m2 + this.m3;
-    this.average = this.total / 3;
-  }
-
+<style id="mxvpg7">
+h2{
+    text-align:center;
 }
+
+.container{
+    background-color: azure;
+    width:300px;
+    margin:auto;
+    padding:20px;
+    border:1px solid black;
+    border-radius:10px;
+    text-align:center;
+}
+
+input{
+    width:80%;
+    padding:5px;
+}
+
+button{
+    padding:6px 15px;
+    margin-top:10px;
+}
+</style>
+
+<div class="container">
+
+<h2>Student Marks Calculator</h2>
+
+Subject 1:
+<input type="number" [(ngModel)]="m1"><br><br>
+
+Subject 2:
+<input type="number" [(ngModel)]="m2"><br><br>
+
+Subject 3:
+<input type="number" [(ngModel)]="m3"><br><br>
+
+<button (click)="calculate()">Calculate</button>
+
+<br><br>
+
+Total: {{total}} <br>
+Average: {{average}}
+
+</div>
 
 
 app.ts
